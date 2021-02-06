@@ -1,0 +1,164 @@
+[
+    {
+        "model": "auth.group",
+        "pk": 1,
+        "fields": {
+            "name": "allowed to FOO and BAZ"
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 2,
+        "fields": {
+            "name": "allowed to BOO, FOO and BAR"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "alice",
+            "groups": [
+                1
+            ],
+            "user_permissions": [
+                ["view_itemlock", "ws_lock", "itemlock"],
+                ["add_itemlock", "ws_lock", "itemlock"],
+                ["change_itemlock", "ws_lock", "itemlock"],
+                ["view_item", "ws_lock", "item"]
+            ]
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "username": "bob",
+            "groups": [
+               2
+            ],
+            "user_permissions": [
+                ["view_itemlock", "ws_lock", "itemlock"],
+                ["add_itemlock", "ws_lock", "itemlock"],
+                ["change_itemlock", "ws_lock", "itemlock"],
+                ["view_item", "ws_lock", "item"]
+            ]
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "username": "charlie",
+            "user_permissions": [
+                ["view_itemlock", "ws_lock", "itemlock"],
+                ["add_itemlock", "ws_lock", "itemlock"],
+                ["change_itemlock", "ws_lock", "itemlock"],
+                ["view_item", "ws_lock", "item"]
+            ]
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "username": "david"
+        }
+    },
+    {
+        "model": "ws_lock.grouptypevisibility",
+        "pk": 1,
+        "fields": {
+            "item_type": 2,
+            "group": 1
+        }
+    },
+    {
+        "model": "ws_lock.grouptypevisibility",
+        "pk": 2,
+        "fields": {
+            "item_type": 4,
+            "group": 1
+        }
+    },
+    {
+        "model": "ws_lock.grouptypevisibility",
+        "pk": 3,
+        "fields": {
+            "item_type": 1,
+            "group": 2
+        }
+    },
+    {
+        "model": "ws_lock.grouptypevisibility",
+        "pk": 4,
+        "fields": {
+            "item_type": 2,
+            "group": 2
+        }
+    },
+    {
+        "model": "ws_lock.grouptypevisibility",
+        "pk": 5,
+        "fields": {
+            "item_type": 3,
+            "group": 2
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 1,
+        "fields": {
+            "item_type": 1
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 2,
+        "fields": {
+            "item_type": 1
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 3,
+        "fields": {
+            "item_type": 2
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 4,
+        "fields": {
+            "item_type": 2
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 5,
+        "fields": {
+            "item_type": 3
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 6,
+        "fields": {
+            "item_type": 3
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 7,
+        "fields": {
+            "item_type": 4
+        }
+    },
+    {
+        "model": "ws_lock.item",
+        "pk": 8,
+        "fields": {
+            "item_type": 4
+        }
+    }
+]
