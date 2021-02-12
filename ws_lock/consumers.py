@@ -1,3 +1,4 @@
+import threading
 from collections import defaultdict
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
@@ -5,6 +6,7 @@ from .models import Item, ItemLock, GroupTypeVisibility
 
 
 def can_user_connect(user):
+    print('db-connection-1', threading.get_ident())
     return user and not user.is_anonymous and user.is_active and user.has_perms([
         'ws_lock.view_itemlock',
         'ws_lock.add_itemlock',
@@ -27,11 +29,13 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
             await self.channel_layer.group_send(f'type-{group}', {'type': 'receive.locks', 'data': payload})
 
     async def receive_locks(self, event):
+        print('send', threading.get_ident())
         await self.send_json(event['data'])
 
     @database_sync_to_async
     def connection_groups(self):
         """Connection groups based on current user"""
+        print('db-connection-2', threading.get_ident())
         user = self.scope.get('user')
         if user is None or user.is_anonymous or not user.is_active:
             return []
@@ -46,6 +50,7 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         user = self.scope.get('user')
+        print('connect', threading.get_ident())
         accept = await database_sync_to_async(can_user_connect)(user)
         if accept:
             await super().connect()
@@ -54,6 +59,7 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def _update_locks(self, items):
+        print('db-connection-3', threading.get_ident())
         user = self.scope['user']
         # validate items by filtering with user-group-permission
         validated_items = list(
@@ -85,11 +91,13 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
             return
 
         # process locks and then re-send them
+        print('receive', threading.get_ident())
         updated_locks = await self._update_locks(items)
         await self.send_locks(updated_locks)
 
     @database_sync_to_async
     def _leave_locks_on_close(self):
+        print('db-connection-4', threading.get_ident())
         user = self.scope['user']
         # fetch locked elements from database
         user_locks = list(user.lock_items.filter(locked=True).select_related('item', 'user'))
@@ -101,4 +109,5 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
         # clean all open inspections
         left_locks = await self._leave_locks_on_close()
         # send message to others
+        print('disconnect', threading.get_ident())
         await self.send_locks(left_locks)

@@ -1,3 +1,4 @@
+import threading
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from .utils import application, websocket_connect_to_asgi, User
@@ -8,12 +9,14 @@ class TestLocks(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        print('test-setup', threading.get_ident())
         cls.USERS = {
             username: User.objects.get_by_natural_key(username)
             for username in ['alice', 'bob', 'charlie', 'david']
         }
 
     async def test_denied_access(self):
+        print('test', threading.get_ident())
         communicator = websocket_connect_to_asgi(application, self.USERS['david'])
         connected, _subprotocol = await communicator.connect()
         self.assertFalse(connected)

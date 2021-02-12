@@ -1,3 +1,4 @@
+import threading
 import pytest
 
 
@@ -6,6 +7,7 @@ class TestLocks:
 
     @pytest.mark.asyncio
     async def test_denied_access(self, wrong_socket_user):
+        print('test', threading.get_ident())
         assert wrong_socket_user.connected is False
 
     @pytest.mark.asyncio
