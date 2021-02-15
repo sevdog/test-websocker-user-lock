@@ -41,7 +41,9 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
             return []
 
         visible_types = GroupTypeVisibility.objects.filter(group__in=user.groups.all()).values_list('item_type', flat=True).distinct()
-        return [f'type-{t}' for t in visible_types]
+        groups = [f'type-{t}' for t in visible_types]
+        print('Groups', groups, 'for user', user)
+        return groups
 
     async def websocket_connect(self, message):
         # set connection groups at runtime
@@ -52,6 +54,7 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
         user = self.scope.get('user')
         print('connect', threading.get_ident())
         accept = await database_sync_to_async(can_user_connect)(user)
+        print('User', user, 'was accepted?', accept)
         if accept:
             await super().connect()
         else:
@@ -83,6 +86,7 @@ class ItemLockConsumer(AsyncJsonWebsocketConsumer):
         active_locks = list(pending_locks.select_related('item', 'user'))
         left_locks = list(user.lock_items.filter(id__in=left_locks_ids).select_related('item', 'user'))
         # return every lock which needs to be sent
+        print('Locks for user', user, ':', active_locks + left_locks)
         return active_locks + left_locks
 
     async def receive_json(self, content):

@@ -1,10 +1,20 @@
 import threading
+from asgiref.sync import sync_to_async
 import pytest
+from ..models import Item
 
 
 @pytest.mark.django_db(transaction=True)
 class TestLocks:
 
+    @pytest.mark.asyncio
+    async def test_fetch(self, django_db_setup_for_sockets):
+        @sync_to_async
+        def fetch():
+            return list(Item.objects.all())
+
+        items = await fetch()
+        assert len(items) == 8
     @pytest.mark.asyncio
     async def test_denied_access(self, wrong_socket_user):
         print('test', threading.get_ident())
@@ -73,7 +83,10 @@ class TestLocks:
             'user': allowed_socket_user_baz.user.id,
             'item': 3,
             'locked': True
-        }, {
+        }]
+        assert await allowed_socket_user_bar.communicator.receive_nothing()
+        received_baz = await allowed_socket_user_baz.communicator.receive_json_from()
+        assert received_baz == [{
             'user': allowed_socket_user_baz.user.id,
             'item': 7,
             'locked': True
@@ -88,11 +101,14 @@ class TestLocks:
             'locked': False
         }]
         assert received_baz == [{
-            'user': allowed_socket_user_bar.user.id,
+            'user': allowed_socket_user_baz.user.id,
             'item': 3,
             'locked': False
-        }, {
-            'user': allowed_socket_user_bar.user.id,
+        }]
+        assert await allowed_socket_user_bar.communicator.receive_nothing()
+        received_baz = await allowed_socket_user_baz.communicator.receive_json_from()
+        assert received_baz == [{
+            'user': allowed_socket_user_baz.user.id,
             'item': 7,
             'locked': False
         }]
