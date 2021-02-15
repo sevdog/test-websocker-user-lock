@@ -1,0 +1,36 @@
+name: Tests
+
+on: push
+
+jobs:
+  runtest:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Cache deps
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          pip-${{ hashFiles('requirements.txt') }}
+          pip-
+          pip
+    - name: Install python dependencies
+      run: |
+        pip install -r requirements.txt
+    - name: Run tests
+      run: |
+        PYTHONPATH=. py.test --ds=example.settings
