@@ -7,6 +7,6 @@ Django==4.2.13
 msgpack==1.0.2
 # tests
 async_generator==1.10
-pytest==6.2.2
+pytest==8.2.2
 pytest-asyncio==0.14.0
 pytest-django==4.1.0
