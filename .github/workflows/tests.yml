@@ -9,25 +9,18 @@ jobs:
     strategy:
       matrix:
         python:
-          - 3.6
-          - 3.7
-          - 3.8
-          - 3.9
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python }}
-    - name: Cache deps
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          pip-${{ hashFiles('requirements.txt') }}
-          pip-
-          pip
+        cache: 'pip'
+        cache-dependency-path: requirements.txt
     - name: Install python dependencies
       run: |
         pip install -r requirements.txt
