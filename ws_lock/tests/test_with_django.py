@@ -1,7 +1,6 @@
 import threading
 from asgiref.sync import sync_to_async
 from django.test import TestCase, TransactionTestCase
-from django.contrib.auth import get_user_model
 from ..models import Item
 from .utils import application, websocket_connect_to_asgi, User
 
@@ -128,14 +127,14 @@ class TestLocks(TestCase):
             'locked': False
         }]
         assert received_baz == [{
-            'user': self.USERS['bob'].id,
+            'user': self.USERS['alice'].id,
             'item': 3,
             'locked': False
         }]
         assert await communicator_bar.receive_nothing()
         received_baz = await communicator_baz.receive_json_from()
         assert received_baz == [{
-            'user': self.USERS['bob'].id,
+            'user': self.USERS['alice'].id,
             'item': 7,
             'locked': False
         }]
