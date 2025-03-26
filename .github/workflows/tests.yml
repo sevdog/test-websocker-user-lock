@@ -28,6 +28,9 @@ jobs:
         channels:
           - '4.2.0'
           - '4.1.0'
+        use_postgres:
+          - 'yes'
+          - 'no'
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -42,4 +45,4 @@ jobs:
         pip install 'channels==${{ matrix.channels}}'
     - name: Run tests
       run: |
-        PYTHONPATH=. py.test --ds=example.settings
+        PYTHONPATH=. USE_POSTGRES=${{ matrix.use_postgres }} py.test --ds=example.settings
