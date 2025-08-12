@@ -1,11 +1,18 @@
 import threading
 from asgiref.sync import sync_to_async
 from django.test import TestCase, TransactionTestCase
+
+try:
+    from channels.testing import ConsumerTestMixin
+except ImportError:
+    class ConsumerTestMixin:
+        pass
+
 from ..models import Item
 from .utils import application, websocket_connect_to_asgi, User
 
 
-class TestLocks(TestCase):
+class TestLocks(ConsumerTestMixin, TestCase):
     fixtures = ['initial_setup']
 
     @classmethod
