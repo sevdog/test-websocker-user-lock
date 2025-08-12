@@ -26,7 +26,8 @@ jobs:
           - '3.11'
           - '3.12'
         channels:
-          - '4.2.0'
+          - git+https://github.com/sevdog/channels.git@662eb3b0d366f3968a7d4b535bc90d44f2d6612c
+          - '4.3.1'
           - '4.1.0'
         use_postgres:
           - 'yes'
